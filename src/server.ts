@@ -3,8 +3,8 @@ import "dotenv/config"
 import "./mqttClient";
 import app from "./app"
 
-const port = 3000;
+const port = process.env.PORT;
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`✅ Server is running on http://localhost:${port}`);
 });
