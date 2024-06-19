@@ -1,5 +1,5 @@
 import mqtt from "mqtt";
-import { Vehicle } from "./model/Vehicle";
+import { Vehicle } from "../model/Vehicle";
 
 const client = mqtt.connect("mqtt://mqtt.hsl.fi:1883");
 

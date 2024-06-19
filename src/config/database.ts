@@ -27,7 +27,8 @@ class Database{
       username: this.POSTGRES_USERNAME,
       password: this.POSTGRES_PASSWORD,
       dialect: "postgres",
-      models:[Vehicle]
+      models:[Vehicle],
+      logging: false,
     });
 
     await this.sequelize.authenticate().then(()=>{

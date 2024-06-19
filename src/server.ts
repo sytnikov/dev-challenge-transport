@@ -1,6 +1,6 @@
 import "dotenv/config"
 
-import "./mqttClient";
+import "./utils/mqttClient";
 import app from "./app"
 
 const port = process.env.PORT;
