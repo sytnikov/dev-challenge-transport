@@ -45,7 +45,7 @@ client.on("message", async (topic, message) => {
     !direction ||
     !operator
   ) {
-    console.error("Incomplete data received! Skipping processing");
+    // console.error("Incomplete data received! Skipping processing");
     return;
   }
 
@@ -56,9 +56,9 @@ client.on("message", async (topic, message) => {
     lastCoordinates.latitude === latitude &&
     lastCoordinates.longitude === longitude
   ) {
-    console.log(
-      `Coordinates for vehicle ${reg_number} have not changed, skipping insertion`
-    );
+    // console.log(
+    //   `Coordinates for vehicle ${reg_number} have not changed, skipping insertion`
+    // );
     return;
   }
 
