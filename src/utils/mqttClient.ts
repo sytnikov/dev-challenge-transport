@@ -1,12 +1,14 @@
 import mqtt from "mqtt";
 import { Vehicle } from "../model/Vehicle";
 
+const lastCoordinatesMap = new Map();
+
 const client = mqtt.connect("mqtt://mqtt.hsl.fi:1883");
 
 client.on("connect", () => {
   console.log("Connected to MQTT broker");
-  client.subscribe("/hfp/v2/journey/ongoing/vp/+/+/+/+/+/+/+/+/3/#", (err) => {
-  // client.subscribe("/hfp/v2/journey/ongoing/vp/#", (err) => {
+  client.subscribe("/hfp/v2/journey/ongoing/vp/+/+/+/+/+/+/+/+/5/#", (err) => {
+    // client.subscribe("/hfp/v2/journey/ongoing/vp/#", (err) => {
     if (err) {
       console.error("Failed to subscribe to topic");
     } else {
@@ -18,28 +20,66 @@ client.on("connect", () => {
 client.on("message", async (topic, message) => {
   const data = JSON.parse(message.toString());
   if (!data.VP) {
-    throw new Error("No payload from the service")
+    console.error("No VP data received, skipping processing");
+    return;
   }
+
   const {
-    desi: customer_number,
+    desi: route_number,
     veh: reg_number,
     lat: latitude,
     long: longitude,
+    tst: timestamp,
+    spd: speed,
+    dir: direction,
+    oper: operator,
   } = data.VP;
 
-  if (customer_number && reg_number && latitude && longitude) {
-    const vehicle = {
-      customer_number,
-      reg_number,
-      latitude,
-      longitude
-    };
-    try {
-      await Vehicle.create(vehicle)
-      // console.log("Data inserted");
-    } catch (err) {
-      console.error("Failed to insert data", err);
-    }
+  if (
+    !route_number ||
+    !reg_number ||
+    !latitude ||
+    !longitude ||
+    !timestamp ||
+    !speed ||
+    !direction ||
+    !operator
+  ) {
+    console.error("Incomplete data received! Skipping processing");
+    return;
+  }
+
+  const lastCoordinates = lastCoordinatesMap.get(reg_number);
+
+  if (
+    lastCoordinates &&
+    lastCoordinates.latitude === latitude &&
+    lastCoordinates.longitude === longitude
+  ) {
+    console.log(
+      `Coordinates for vehicle ${reg_number} have not changed, skipping insertion`
+    );
+    return;
+  }
+
+  lastCoordinatesMap.set(reg_number, { latitude, longitude });
+
+  const vehicle = {
+    route_number,
+    reg_number,
+    latitude,
+    longitude,
+    speed,
+    timestamp,
+    direction,
+    operator,
+  };
+
+  try {
+    await Vehicle.create(vehicle);
+    // console.log("Data inserted");
+  } catch (err) {
+    console.error("Failed to insert data", err);
   }
 });
 
