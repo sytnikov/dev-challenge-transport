@@ -5,6 +5,7 @@ dotenv.config();
 
 import { Sequelize } from "sequelize-typescript";
 import { Vehicle } from "../model/Vehicle";
+import { RouteAverageSpeed } from "../model/RouteAverageSpeed";
 
 class Database{
   public sequelize: Sequelize | undefined;
@@ -27,7 +28,7 @@ class Database{
       username: this.POSTGRES_USERNAME,
       password: this.POSTGRES_PASSWORD,
       dialect: "postgres",
-      models:[Vehicle],
+      models:[Vehicle, RouteAverageSpeed],
       logging: false,
     });
 
@@ -39,4 +40,4 @@ class Database{
   }
 }
 
-export default Database
+export default new Database().sequelize

@@ -21,8 +21,8 @@ class App {
   }
 
   protected databaseSync(): void {
-    const db = new Database();
-    db.sequelize?.sync();
+    // const db = new Database();
+    Database?.sync();
   }
 
   protected routes(): void {

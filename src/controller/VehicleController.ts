@@ -38,15 +38,17 @@ class VehicleController {
         longitude: parseFloat(lon as string),
       };
   
-      // get unique latest values for all the routes
-      const vehiclesMap = new Map();
-      vehicles.forEach((vehicle) => {
-        if (!vehiclesMap.has(vehicle.reg_number)) {
-          vehiclesMap.set(vehicle.reg_number, vehicle);
+      // get unique newest values for all the routes
+      const newestVehiclesMap = new Map<string, Vehicle>();
+      
+      for (const vehicle of vehicles) {
+        const existingVehicle = newestVehiclesMap.get(vehicle.reg_number)
+        if (!existingVehicle || vehicle.timestamp > existingVehicle.timestamp) {
+          newestVehiclesMap.set(vehicle.reg_number, vehicle)
         }
-      });
-  
-      const uniqueVehicles: Vehicle[] = Array.from(vehiclesMap.values());
+      }
+
+      const uniqueVehicles: Vehicle[] = Array.from(newestVehiclesMap.values());
   
       const closestVehicles = uniqueVehicles
       .map((uniqueVehicle) => ({

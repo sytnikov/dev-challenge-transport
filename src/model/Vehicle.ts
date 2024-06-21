@@ -60,7 +60,7 @@ export class Vehicle extends Model{
     type: DataType.FLOAT,
     field: Vehicle.VEHICLE_SPEED
   })
-  speed!:string
+  speed!:number
 
   @Column({
     type: DataType.INTEGER,

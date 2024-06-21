@@ -1,5 +1,5 @@
 import mqtt from "mqtt";
-import { Vehicle } from "../model/Vehicle";
+import { VehicleRepo } from "../repository/VehicleRepo";
 
 const lastCoordinatesMap = new Map();
 
@@ -76,7 +76,7 @@ client.on("message", async (topic, message) => {
   };
 
   try {
-    await Vehicle.create(vehicle);
+    await new VehicleRepo().createOne(vehicle)
     // console.log("Data inserted");
   } catch (err) {
     console.error("Failed to insert data", err);
