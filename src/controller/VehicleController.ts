@@ -5,27 +5,6 @@ import { VehicleRepo } from "../repository/VehicleRepo";
 import { Vehicle } from "../model/Vehicle";
 
 class VehicleController {
-  async addVehicle(req: Request, res: Response) {
-    try {
-      const newVehicle = new Vehicle();
-      newVehicle.route_number = req.body.customer_number;
-      newVehicle.reg_number = req.body.reg_number;
-      newVehicle.latitude = req.body.latitude;
-      newVehicle.longitude = req.body.longitude;
-
-      await new VehicleRepo().createOne(newVehicle);
-
-      res.status(201).json({
-        status: "Created!",
-        message: "A new vehicle created",
-      });
-    } catch (err) {
-      res.status(500).json({
-        status: "Internal Server Error",
-        message: "Internal Server Error",
-      });
-    }
-  }
 
   async getAllVehicles(req: Request, res: Response) {
     try {
@@ -52,13 +31,14 @@ class VehicleController {
         .json({ error: "Please provide latitude and longitude" });
     }
     try {
-      const vehicles: Vehicle[] = (await new VehicleRepo().getAll()).map(vehicle => vehicle.dataValues);
+      const vehicles: Vehicle[] = (await new VehicleRepo().getAllTimeDesc());
   
       const userLocation = {
         latitude: parseFloat(lat as string),
         longitude: parseFloat(lon as string),
       };
   
+      // get unique latest values for all the routes
       const vehiclesMap = new Map();
       vehicles.forEach((vehicle) => {
         if (!vehiclesMap.has(vehicle.reg_number)) {
@@ -90,7 +70,26 @@ class VehicleController {
         message: "Internal Server Error",
       });
     }
-    return
+  }
+
+  async getAllAvgSpeed(req: Request, res: Response) {
+    try {
+      const vehiclesAvegareSpeed: {
+        route_number: string,
+        average_speed: number,
+      }[] = (await new VehicleRepo().getAllAvgSpeed());
+      
+      res.status(200).json({
+        status: "Ok!",
+        message: "Average speed for all vehicles calculated",
+        data: vehiclesAvegareSpeed,
+      });
+    } catch (err) {
+      res.status(500).json({
+        status: "Internal Server Error",
+        message: "Internal Server Error",
+      });
+    }
   }
 }
 
