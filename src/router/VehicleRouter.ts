@@ -6,6 +6,7 @@ class VehicleRouter extends BaseRouter {
     this.router.get("", VehicleController.getAllVehicles)
     this.router.get("/closest-vehicles", VehicleController.getClosestVehicles)
     this.router.get("/average-speed", VehicleController.getAllAvgSpeed)
+    this.router.get("/metro-max-speed", VehicleController.getAllMetros)
   }
 }
 

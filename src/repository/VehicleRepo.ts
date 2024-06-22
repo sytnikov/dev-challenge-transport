@@ -1,14 +1,15 @@
-import { Sequelize } from "sequelize-typescript";
+import { Sequelize, } from "sequelize-typescript";
 import sequelize from "../config/database";
 import { Vehicle } from "../model/Vehicle";
 import { RouteAverageSpeed } from "../model/RouteAverageSpeed";
-import { Transaction } from "sequelize";
+import { Op, Transaction } from "sequelize";
 
 interface IVehicleRepo {
   createOne(vehicle: any): Promise<void>; // add zod validation
   getAll(): Promise<Vehicle[]>;
   getAllTimeDesc(): Promise<Vehicle[]>;
   getAllAvgSpeed(): Promise<{ route_number: string; average_speed: number }[]>;
+  getAllRoutes(routeNumbers: String[]): Promise<Vehicle[]>;
 }
 
 export class VehicleRepo implements IVehicleRepo {
@@ -61,7 +62,7 @@ export class VehicleRepo implements IVehicleRepo {
     try {
       const response = await Vehicle.findAll({
         order: [["timestamp", "DESC"]],
-        limit: 30000,
+        limit: 200000,
       });
       return response.map((vehicle) => vehicle.dataValues);
     } catch (err) {
@@ -82,6 +83,21 @@ export class VehicleRepo implements IVehicleRepo {
       return response.map((vehicle) => vehicle.dataValues);
     } catch (err) {
       throw new Error("Failed to fetch the vehicles average speed");
+    }
+  }
+
+  async getAllRoutes(routeNumbers: String[]): Promise<Vehicle[]> {
+    try {
+      const response = await Vehicle.findAll({
+        where: {
+          route_number: {
+            [Op.or]: routeNumbers
+          }
+        }
+      })
+      return response.map((vehicle) => vehicle.dataValues);
+    } catch (err) {
+      throw new Error("Failed to fetch the metro vehicles");
     }
   }
 }

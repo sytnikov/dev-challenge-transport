@@ -7,8 +7,8 @@ const client = mqtt.connect("mqtt://mqtt.hsl.fi:1883");
 
 client.on("connect", () => {
   console.log("Connected to MQTT broker");
-  client.subscribe("/hfp/v2/journey/ongoing/vp/+/+/+/+/+/+/+/+/5/#", (err) => {
-    // client.subscribe("/hfp/v2/journey/ongoing/vp/#", (err) => {
+  // client.subscribe("/hfp/v2/journey/ongoing/vp/+/+/+/+/+/+/+/+/5/#", (err) => {
+    client.subscribe("/hfp/v2/journey/ongoing/vp/#", (err) => {
     if (err) {
       console.error("Failed to subscribe to topic");
     } else {
