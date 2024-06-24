@@ -3,11 +3,19 @@ import { Column, DataType, Model, Table } from "sequelize-typescript";
 @Table({
   tableName: Vehicle.VEHICLE_TABLE_NAME,
   timestamps: false,
-  // applying an index to the id and timestamp column to speed up query processing
+  // applying an index to the id, route_number and timestamp column to speed up query processing
   indexes: [
+    {
+      name: "idx_id",
+      fields: ["id"],
+    },
     {
       name: "idx_timestamp",
       fields: ["timestamp"],
+    },
+    {
+      name: "idx_route_number",
+      fields: ["route_number"],
     },
   ],
 })

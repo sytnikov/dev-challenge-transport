@@ -65,7 +65,7 @@ export class VehicleRepo implements IVehicleRepo {
     try {
       const response = await Vehicle.findAll({
         order: [["timestamp", "DESC"]],
-        limit: 200000,
+        limit: 200000, // there's no need to return all the records to calculate closest
       });
       return response.map((vehicle) => vehicle.dataValues);
     } catch (err) {
@@ -73,9 +73,10 @@ export class VehicleRepo implements IVehicleRepo {
     }
   }
 
+  // using an aggregation table for this call, so the query response time doesn't depend on the number of records in the db
   async getAllAvgSpeed(): Promise<VehicleAvgSpeedType[]> {
     try {
-      const response = await RouteAverageSpeed.findAll({
+      const response = await RouteAverageSpeed.findAll({ 
         attributes: [
           "route_number",
           [Sequelize.literal(`total_speed / vehicle_count`), "average_speed"],

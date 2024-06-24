@@ -51,6 +51,7 @@ export class VehicleService implements IVehicleService {
 
     const uniqueVehicles: VehicleType[] = Array.from(newestVehiclesMap.values());
 
+    // consider the newest only those vehicles that have a timestamp record in a 5 sec window before now
     const now = new Date();
     const fiveSecondsFromNow = new Date(now.getTime() - 5000);
 
@@ -96,6 +97,7 @@ export class VehicleService implements IVehicleService {
       }))
       .filter((metro) => metro.distance <= distanceFromLocation)
       
+      // map is needed to store unique vehicles with the maximum speed observed so far
       const closestMetrosMap = new Map();
 
       closestMetros.forEach((metro) => {
@@ -123,14 +125,15 @@ export class VehicleService implements IVehicleService {
       })
 
       const closestMetroMaxSpeed = Array.from(closestMetrosMap.values())
-          .map((metro) => ({
-            route: metro.route_number,
-            vehicle_number: metro.reg_number,
-            v_max: metro.speed,
-            milliseconds_ago: Date.now() - new Date(metro.timestamp).getTime(),
-            distance: metro.distance
-          }))
-
+      .map((metro) => ({
+        route: metro.route_number,
+        vehicle_number: metro.reg_number,
+        v_max: metro.speed,
+        milliseconds_ago: Date.now() - new Date(metro.timestamp).getTime(),
+        distance: metro.distance
+      }))
+      console.log('closestMetroMaxSpeed amount:', closestMetroMaxSpeed.length)
+      
       return closestMetroMaxSpeed
   }
 
