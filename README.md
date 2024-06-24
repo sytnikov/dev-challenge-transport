@@ -98,3 +98,5 @@ some data (eg. position) might be missing. As the data about geo positioning is 
 - During the night time, when the traffic is low, the first endpoint response can be an empty array as there are no vehicles around.
 
 - After some data examination, it was found out that for some vehicles (specifically for metro ones), the timestamp goes ahead of the now moment, that's why the value of the time since max speed of the metro was achieved can be nagative.
+
+- Data exploration issue: some of the metro vehicles have timestamps in the future.

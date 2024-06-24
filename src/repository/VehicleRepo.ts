@@ -7,7 +7,7 @@ import { VehicleType } from "../types/VehicleType";
 import { VehicleAvgSpeedType } from "../types/VehicleAvgSpeedType";
 
 interface IVehicleRepo {
-  createOne(vehicle: any): Promise<void>; // add zod validation
+  createOne(vehicle: VehicleType): Promise<void>; // add zod validation
   getAll(): Promise<VehicleType[]>;
   getAllTimeDesc(): Promise<Vehicle[]>;
   getAllAvgSpeed(): Promise<VehicleAvgSpeedType[]>;
@@ -15,7 +15,7 @@ interface IVehicleRepo {
 }
 
 export class VehicleRepo implements IVehicleRepo {
-  async createOne(vehicle: any): Promise<void> {
+  async createOne(vehicle: VehicleType): Promise<void> {
     let transaction: Transaction | undefined | null = null;
     try {
       transaction = await sequelize?.transaction();
