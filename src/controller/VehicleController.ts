@@ -103,7 +103,7 @@ class VehicleController {
 
   async getAllMetros(req: Request, res: Response) {
     try {
-      const metros = await new VehicleRepo().getAllRoutes(["73N"])
+      const metros = await new VehicleRepo().getAllRoutes(["M1", "M2"])
       
       const location = {
         lat: 60.18408281913011,

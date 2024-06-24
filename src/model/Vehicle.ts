@@ -1,10 +1,14 @@
-import { Column, DataType, Model, Table } from "sequelize-typescript";
+import { Column, DataType, Index, Model, Table } from "sequelize-typescript";
 
 @Table({
   tableName: Vehicle.VEHICLE_TABLE_NAME,
-  timestamps: false
+  timestamps: false,
+  // applying an index to the timestamp column to speed up query processing for 
+  indexes: [{ 
+    name: "idx_timestamp",
+    fields: ["timestamp"]
+  }]
 })
-
 export class Vehicle extends Model{
 
   public static VEHICLE_TABLE_NAME = "vehicle" as string;
