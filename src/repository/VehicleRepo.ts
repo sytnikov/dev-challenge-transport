@@ -1,15 +1,17 @@
-import { Sequelize, } from "sequelize-typescript";
+import { Sequelize } from "sequelize-typescript";
 import sequelize from "../config/database";
 import { Vehicle } from "../model/Vehicle";
 import { RouteAverageSpeed } from "../model/RouteAverageSpeed";
 import { Op, Transaction } from "sequelize";
+import { VehicleType } from "../types/VehicleType";
+import { VehicleAvgSpeedType } from "../types/VehicleAvgSpeedType";
 
 interface IVehicleRepo {
   createOne(vehicle: any): Promise<void>; // add zod validation
-  getAll(): Promise<Vehicle[]>;
+  getAll(): Promise<VehicleType[]>;
   getAllTimeDesc(): Promise<Vehicle[]>;
-  getAllAvgSpeed(): Promise<{ route_number: string; average_speed: number }[]>;
-  getAllRoutes(routeNumbers: String[]): Promise<Vehicle[]>;
+  getAllAvgSpeed(): Promise<VehicleAvgSpeedType[]>;
+  getSpecificRoutes(routeNumbers: String[]): Promise<VehicleType[]>;
 }
 
 export class VehicleRepo implements IVehicleRepo {
@@ -41,7 +43,6 @@ export class VehicleRepo implements IVehicleRepo {
       }
 
       await transaction?.commit();
-      
     } catch (err) {
       await transaction?.rollback();
       console.error("Error creating vehicle", err);
@@ -49,9 +50,11 @@ export class VehicleRepo implements IVehicleRepo {
     }
   }
 
-  async getAll(): Promise<Vehicle[]> {
+  async getAll(): Promise<VehicleType[]> {
     try {
-      const response = await Vehicle.findAll();
+      const response = await Vehicle.findAll({
+        limit: 10000, // pagination could be implemented for better fetching
+      });
       return response;
     } catch (err) {
       throw new Error("Failed to fetch the vehicles");
@@ -70,9 +73,7 @@ export class VehicleRepo implements IVehicleRepo {
     }
   }
 
-  async getAllAvgSpeed(): Promise<
-    { route_number: string; average_speed: number }[]
-  > {
+  async getAllAvgSpeed(): Promise<VehicleAvgSpeedType[]> {
     try {
       const response = await RouteAverageSpeed.findAll({
         attributes: [
@@ -86,15 +87,15 @@ export class VehicleRepo implements IVehicleRepo {
     }
   }
 
-  async getAllRoutes(routeNumbers: String[]): Promise<Vehicle[]> {
+  async getSpecificRoutes(routeNumbers: String[]): Promise<VehicleType[]> {
     try {
       const response = await Vehicle.findAll({
         where: {
           route_number: {
-            [Op.or]: routeNumbers
-          }
-        }
-      })
+            [Op.or]: routeNumbers,
+          },
+        },
+      });
       return response.map((vehicle) => vehicle.dataValues);
     } catch (err) {
       throw new Error("Failed to fetch the metro vehicles");

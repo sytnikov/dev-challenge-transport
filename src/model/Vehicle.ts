@@ -1,16 +1,17 @@
-import { Column, DataType, Index, Model, Table } from "sequelize-typescript";
+import { Column, DataType, Model, Table } from "sequelize-typescript";
 
 @Table({
   tableName: Vehicle.VEHICLE_TABLE_NAME,
   timestamps: false,
-  // applying an index to the timestamp column to speed up query processing for 
-  indexes: [{ 
-    name: "idx_timestamp",
-    fields: ["timestamp"]
-  }]
+  // applying an index to the id and timestamp column to speed up query processing
+  indexes: [
+    {
+      name: "idx_timestamp",
+      fields: ["timestamp"],
+    },
+  ],
 })
-export class Vehicle extends Model{
-
+export class Vehicle extends Model {
   public static VEHICLE_TABLE_NAME = "vehicle" as string;
   public static VEHICLE_ID = "id" as string;
   public static VEHICLE_ROUTE_NUMBER = "route_number" as string;
@@ -26,55 +27,55 @@ export class Vehicle extends Model{
     type: DataType.INTEGER,
     primaryKey: true,
     autoIncrement: true,
-    field: Vehicle.VEHICLE_ID
+    field: Vehicle.VEHICLE_ID,
   })
-  id!:number
+  id!: number;
 
   @Column({
     type: DataType.STRING(100),
-    field: Vehicle.VEHICLE_ROUTE_NUMBER
+    field: Vehicle.VEHICLE_ROUTE_NUMBER,
   })
-  route_number!:string
+  route_number!: string;
 
   @Column({
     type: DataType.STRING(100),
-    field: Vehicle.VEHICLE_REG_NUMBER
+    field: Vehicle.VEHICLE_REG_NUMBER,
   })
-  reg_number!:string
+  reg_number!: string;
 
   @Column({
     type: DataType.FLOAT,
-    field: Vehicle.VEHICLE_LAT
+    field: Vehicle.VEHICLE_LAT,
   })
-  latitude!:string
+  latitude!: string;
 
   @Column({
     type: DataType.FLOAT,
-    field: Vehicle.VEHICLE_LON
+    field: Vehicle.VEHICLE_LON,
   })
-  longitude!:string
+  longitude!: string;
 
   @Column({
     type: DataType.DATE,
-    field: Vehicle.VEHICLE_TIMESTAMP
+    field: Vehicle.VEHICLE_TIMESTAMP,
   })
-  timestamp!:Date
+  timestamp!: Date;
 
   @Column({
     type: DataType.FLOAT,
-    field: Vehicle.VEHICLE_SPEED
+    field: Vehicle.VEHICLE_SPEED,
   })
-  speed!:number
+  speed!: number;
 
   @Column({
     type: DataType.INTEGER,
-    field: Vehicle.VEHICLE_OPERATOR
+    field: Vehicle.VEHICLE_OPERATOR,
   })
-  operator!:number
+  operator!: number;
 
   @Column({
     type: DataType.STRING(10),
-    field: Vehicle.VEHICLE_DIRECTION
+    field: Vehicle.VEHICLE_DIRECTION,
   })
-  direction!:string
+  direction!: string;
 }

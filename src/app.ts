@@ -1,5 +1,4 @@
 import express, { Application, Request, Response } from "express";
-import { getDistance } from "geolib";
 
 import Database from "./config/database";
 import VehicleRouter from "./router/VehicleRouter";
