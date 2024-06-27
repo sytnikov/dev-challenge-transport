@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
 
 import Database from "./config/database";
-import VehicleRouter from "./router/VehicleRouter";
+import { VehicleRouter } from "./router/VehicleRouter";
 
 class App {
   public app: Application;
@@ -20,7 +20,6 @@ class App {
   }
 
   protected databaseSync(): void {
-    // const db = new Database();
     Database?.sync();
   }
 
@@ -28,7 +27,7 @@ class App {
     this.app.route("/").get((req: Request, res: Response) => {
       res.send("Welcome home!")
     })
-    this.app.use("/api/v1/vehicles", VehicleRouter)
+    this.app.use("/api/v1/vehicles", new VehicleRouter().router)
   }
 }
 

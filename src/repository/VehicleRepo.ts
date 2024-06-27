@@ -1,13 +1,15 @@
 import { Sequelize } from "sequelize-typescript";
+import { Op, Transaction } from "sequelize";
+
 import sequelize from "../config/database";
 import { Vehicle } from "../model/Vehicle";
 import { RouteAverageSpeed } from "../model/RouteAverageSpeed";
-import { Op, Transaction } from "sequelize";
 import { VehicleType } from "../types/VehicleType";
 import { VehicleAvgSpeedType } from "../types/VehicleAvgSpeedType";
+import { VehicleCreateDtoType } from "../types/VehicleCreateDtoType";
 
 interface IVehicleRepo {
-  createOne(vehicle: VehicleType): Promise<void>; // add zod validation
+  createOne(vehicle: VehicleCreateDtoType): Promise<void>; // add zod validation
   getAll(): Promise<VehicleType[]>;
   getAllTimeDesc(): Promise<Vehicle[]>;
   getAllAvgSpeed(): Promise<VehicleAvgSpeedType[]>;
@@ -15,7 +17,7 @@ interface IVehicleRepo {
 }
 
 export class VehicleRepo implements IVehicleRepo {
-  async createOne(vehicle: VehicleType): Promise<void> {
+  async createOne(vehicle: VehicleCreateDtoType): Promise<void> {
     let transaction: Transaction | undefined | null = null;
     try {
       transaction = await sequelize?.transaction();
@@ -46,7 +48,7 @@ export class VehicleRepo implements IVehicleRepo {
     } catch (err) {
       await transaction?.rollback();
       console.error("Error creating vehicle", err);
-      // throw new Error("Failed to create a vehicle")
+      throw new Error("Failed to create a vehicle");
     }
   }
 
@@ -65,7 +67,7 @@ export class VehicleRepo implements IVehicleRepo {
     try {
       const response = await Vehicle.findAll({
         order: [["timestamp", "DESC"]],
-        limit: 200000, // there's no need to return all the records to calculate closest
+        limit: 200000, // there's no need to return all the records to calculate closest, can be even smaller than 200000
       });
       return response.map((vehicle) => vehicle.dataValues);
     } catch (err) {
@@ -76,7 +78,7 @@ export class VehicleRepo implements IVehicleRepo {
   // using an aggregation table for this call, so the query response time doesn't depend on the number of records in the db
   async getAllAvgSpeed(): Promise<VehicleAvgSpeedType[]> {
     try {
-      const response = await RouteAverageSpeed.findAll({ 
+      const response = await RouteAverageSpeed.findAll({
         attributes: [
           "route_number",
           [Sequelize.literal(`total_speed / vehicle_count`), "average_speed"],
@@ -99,7 +101,7 @@ export class VehicleRepo implements IVehicleRepo {
       });
       return response.map((vehicle) => vehicle.dataValues);
     } catch (err) {
-      throw new Error("Failed to fetch the metro vehicles");
+      throw new Error("Failed to fetch the specific vehicles");
     }
   }
 }

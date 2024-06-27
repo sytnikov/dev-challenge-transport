@@ -1,5 +1,7 @@
 import mqtt from "mqtt";
+
 import { VehicleRepo } from "../repository/VehicleRepo";
+import { VehicleCreateDtoType } from "../types/VehicleCreateDtoType";
 
 const lastCoordinatesMap = new Map();
 
@@ -7,7 +9,7 @@ const client = mqtt.connect("mqtt://mqtt.hsl.fi:1883");
 
 client.on("connect", () => {
   console.log("Connected to MQTT broker");
-    client.subscribe("/hfp/v2/journey/ongoing/vp/#", (err) => {
+  client.subscribe("/hfp/v2/journey/ongoing/vp/#", (err) => {
     if (err) {
       console.error("Failed to subscribe to topic");
     } else {
@@ -44,7 +46,6 @@ client.on("message", async (topic, message) => {
     !direction ||
     !operator
   ) {
-    // console.error("Incomplete data received! Skipping processing");
     return;
   }
 
@@ -55,15 +56,12 @@ client.on("message", async (topic, message) => {
     lastCoordinates.latitude === latitude &&
     lastCoordinates.longitude === longitude
   ) {
-    // console.log(
-    //   `Coordinates for vehicle ${reg_number} have not changed, skipping insertion`
-    // );
     return;
   }
 
   lastCoordinatesMap.set(reg_number, { latitude, longitude });
 
-  const vehicle = {
+  const vehicle: VehicleCreateDtoType = {
     route_number,
     reg_number,
     latitude,
@@ -75,7 +73,7 @@ client.on("message", async (topic, message) => {
   };
 
   try {
-    await new VehicleRepo().createOne(vehicle)
+    await new VehicleRepo().createOne(vehicle);
   } catch (err) {
     console.error("Failed to insert data", err);
   }

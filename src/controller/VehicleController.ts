@@ -75,15 +75,14 @@ export class VehicleController {
     try {
       const closestMetroMaxSpeed: VehiclePartialType[] =
         await this.vehicleService.getClosestMetroMaxSpeed();
-      const closestMetroMaxSpeedConverted: MetroMaxSpeedType[] = closestMetroMaxSpeed.map(
-        (metro) => ({
+      const closestMetroMaxSpeedConverted: MetroMaxSpeedType[] =
+        closestMetroMaxSpeed.map((metro) => ({
           route: metro.route_number,
           vehicle_number: metro.reg_number,
           v_max: convertToKmH(metro.speed),
           milliseconds_ago: Date.now() - new Date(metro.timestamp).getTime(),
           distance: metro.distance,
-        })
-      );
+        }));
       res.status(200).json({
         status: 200,
         message:

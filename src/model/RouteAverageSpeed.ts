@@ -2,11 +2,9 @@ import { Column, DataType, Model, Table } from "sequelize-typescript";
 
 @Table({
   tableName: RouteAverageSpeed.RAS_TABLE_NAME,
-  timestamps: false
+  timestamps: false,
 })
-
-export class RouteAverageSpeed extends Model{
-
+export class RouteAverageSpeed extends Model {
   public static RAS_TABLE_NAME = "route_average_speed" as string;
   public static RAS_ROUTE_NUMBER = "route_number" as string;
   public static RAS_TOTAL_SPEED = "total_speed" as string;
@@ -15,19 +13,19 @@ export class RouteAverageSpeed extends Model{
   @Column({
     type: DataType.STRING(100),
     primaryKey: true,
-    field: RouteAverageSpeed.RAS_ROUTE_NUMBER
+    field: RouteAverageSpeed.RAS_ROUTE_NUMBER,
   })
-  route_number!:string
+  route_number!: string;
 
   @Column({
     type: DataType.FLOAT,
-    field: RouteAverageSpeed.RAS_TOTAL_SPEED
+    field: RouteAverageSpeed.RAS_TOTAL_SPEED,
   })
-  total_speed!:number
+  total_speed!: number;
 
   @Column({
     type: DataType.INTEGER,
-    field: RouteAverageSpeed.RAS_VEHICLE_COUNT
+    field: RouteAverageSpeed.RAS_VEHICLE_COUNT,
   })
-  vehicle_count!:number
+  vehicle_count!: number;
 }

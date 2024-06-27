@@ -8,7 +8,7 @@ import BaseRouter from "./BaseRouter";
 const vehicleRepo = new VehicleRepo();
 const vehicleService = new VehicleService(vehicleRepo);
 
-class VehicleRouter extends BaseRouter {
+export class VehicleRouter extends BaseRouter {
   private vehicleController: VehicleController;
 
   constructor() {
@@ -26,10 +26,8 @@ class VehicleRouter extends BaseRouter {
     this.router.get("/average-speed", (req: Request, res: Response) =>
       this.vehicleController.getVehiclesAvgSpeed(req, res)
     );
-    this.router.get("/metro-max-speed", (req: Request, res: Response) => 
+    this.router.get("/metro-max-speed", (req: Request, res: Response) =>
       this.vehicleController.getClosestMetroMaxSpeed(req, res)
-    )
+    );
   }
 }
-
-export default new VehicleRouter().router;

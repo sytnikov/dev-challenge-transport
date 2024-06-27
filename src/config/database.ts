@@ -1,7 +1,7 @@
 import "dotenv/config"
 
-import * as dotenv from "dotenv";
-dotenv.config();
+// import * as dotenv from "dotenv";
+// dotenv.config();
 
 import { Sequelize } from "sequelize-typescript";
 import { Vehicle } from "../model/Vehicle";
